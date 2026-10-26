@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matera Inteligente</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Banda de avisos y errores (reemplaza los alert() de la fase 1) -->
+    <div id="aviso" class="aviso oculto" role="status" aria-live="polite"></div>
+
+    <!-- =========== VISTA 1: autenticación =========== -->
+    <main id="vista-auth" class="centrado">
+        <section class="tarjeta glass estrecha">
+            <h1>🌱 Matera Inteligente</h1>
+            <p class="sub" id="auth-sub">Inicia sesión para ver tus plantas</p>
+
+            <form id="form-auth" novalidate>
+                <div class="campo">
+                    <label for="email">Correo</label>
+                    <input type="email" id="email" autocomplete="email" required>
+                </div>
+                <div class="campo">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" autocomplete="current-password" minlength="8" required>
+                </div>
+                <button type="submit" id="btn-auth">Entrar</button>
+            </form>
+
+            <p class="alterna">
+                <span id="alterna-texto">¿No tienes cuenta?</span>
+                <button type="button" class="enlace" id="btn-cambiar-modo">Regístrate</button>
+            </p>
+        </section>
+    </main>
+
+    <!-- =========== VISTA 2: panel =========== -->
+    <div id="vista-panel" class="oculto">
+
+        <header class="barra glass">
+            <span class="marca">🌱 Matera Inteligente</span>
+            <span class="usuario" id="usuario-email"></span>
+            <button type="button" class="secundario" id="btn-salir">Salir</button>
+        </header>
+
+        <div class="rejilla">
+
+            <!-- ---- Columna izquierda: plantas ---- -->
+            <section class="tarjeta glass">
+                <h2>Mis plantas</h2>
+                <ul id="lista-plantas" class="lista"></ul>
+                <p id="sin-plantas" class="vacio oculto">Aún no has vinculado ninguna planta.</p>
+
+                <h3>Vincular una nueva</h3>
+                <form id="form-vincular" novalidate>
+                    <div class="campo">
+                        <label for="vin-nombre">Nombre</label>
+                        <input type="text" id="vin-nombre" placeholder="Orquídea de la sala" required>
+                    </div>
+                    <div class="campo">
+                        <label for="vin-especie">Especie</label>
+                        <select id="vin-especie" required></select>
+                    </div>
+                    <div class="campo">
+                        <label for="vin-codigo">Código de emparejamiento</label>
+                        <input type="text" id="vin-codigo" placeholder="El que trae el dispositivo" required>
+                    </div>
+                    <button type="submit">Vincular</button>
+                </form>
+
+                <div id="token-dispositivo" class="token oculto">
+                    <p class="token-titulo">Token del dispositivo</p>
+                    <p class="token-nota">Cópialo ahora: es el que recibe el simulador en <code>--token</code>.</p>
+                    <code id="token-valor"></code>
+                    <button type="button" class="secundario" id="btn-copiar">Copiar</button>
+                </div>
+            </section>
+
+            <!-- ---- Columna derecha: estado en vivo ---- -->
+            <section class="tarjeta glass">
+                <div class="cabecera-estado">
+                    <h2 id="estado-titulo">Estado</h2>
+                    <span class="refresco" id="refresco-aviso"></span>
+                </div>
+
+                <p id="estado-vacio" class="vacio">Selecciona una planta para ver su estado.</p>
+
+                <div id="estado" class="oculto">
+                    <p class="marca-tiempo" id="estado-marca"></p>
+                    <h3 class="nivel" id="estado-nivel"></h3>
+                    <div class="barra-cont">
+                        <div id="estado-barra" class="barra-vitalidad"></div>
+                    </div>
+
+                    <ul class="parametros">
+                        <li>
+                            <span class="par-nombre">Humedad</span>
+                            <span class="par-valor" id="par-humedad">—</span>
+                            <span class="insignia" id="ins-humedad">—</span>
+                        </li>
+                        <li>
+                            <span class="par-nombre">Luz</span>
+                            <span class="par-valor" id="par-luz">—</span>
+                            <span class="insignia" id="ins-luz">—</span>
+                        </li>
+                        <li>
+                            <span class="par-nombre">Temperatura</span>
+                            <span class="par-valor" id="par-temperatura">—</span>
+                            <span class="insignia" id="ins-temperatura">—</span>
+                        </li>
+                    </ul>
+
+                    <h3>Historial</h3>
+                    <div class="tabla-cont">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Hum.</th>
+                                    <th>Luz</th>
+                                    <th>Temp.</th>
+                                    <th>Vitalidad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpo-historial"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ---- Evaluación manual: el requisito R1 que ya existía en la fase 1 ---- -->
+        <section class="tarjeta glass ancha">
+            <h2>Evaluación manual</h2>
+            <p class="sub">Evalúa unas lecturas sueltas sin pasar por un dispositivo.</p>
+
+            <form id="form-evaluar" class="fila" novalidate>
+                <div class="campo">
+                    <label for="eva-especie">Especie</label>
+                    <select id="eva-especie" required></select>
+                </div>
+                <div class="campo">
+                    <label for="eva-humedad">Humedad (%)</label>
+                    <input type="number" id="eva-humedad" step="0.1" required>
+                </div>
+                <div class="campo">
+                    <label for="eva-luz">Luz (lux)</label>
+                    <input type="number" id="eva-luz" step="0.1" required>
+                </div>
+                <div class="campo">
+                    <label for="eva-temperatura">Temperatura (°C)</label>
+                    <input type="number" id="eva-temperatura" step="0.1" required>
+                </div>
+                <button type="submit">Analizar</button>
+            </form>
+
+            <div id="resultado-manual" class="oculto">
+                <h3 class="nivel" id="man-nivel"></h3>
+                <div class="barra-cont">
+                    <div id="man-barra" class="barra-vitalidad"></div>
+                </div>
+                <ul class="parametros">
+                    <li>
+                        <span class="par-nombre">Humedad</span>
+                        <span class="par-valor" id="man-humedad">—</span>
+                        <span class="insignia" id="man-ins-humedad">—</span>
+                    </li>
+                    <li>
+                        <span class="par-nombre">Luz</span>
+                        <span class="par-valor" id="man-luz">—</span>
+                        <span class="insignia" id="man-ins-luz">—</span>
+                    </li>
+                    <li>
+                        <span class="par-nombre">Temperatura</span>
+                        <span class="par-valor" id="man-temperatura">—</span>
+                        <span class="insignia" id="man-ins-temperatura">—</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="pie" id="pie"></footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
